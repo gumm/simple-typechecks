@@ -2,16 +2,20 @@
   "name": "simple-typechecks",
   "version": "1.0.0",
   "description": "Simple typecheck",
-  "main": "app.js",
+  "main": "typechecks.js",
   "scripts": {
     "test": "mocha -R spec ./test.js"
   },
   "keywords": [
     "typechecks"
   ],
-  "author": "Jan Badenhorst",
+  "author": "Jan Badenhorst <janhendrik.badenhorst@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "mocha": "^2.2.1"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/gumm/simple-typechecks"
   }
 }
