@@ -1,0 +1,17 @@
+{
+  "name": "simple-typechecks",
+  "version": "1.0.0",
+  "description": "Simple typecheck",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha -R spec ./test.js"
+  },
+  "keywords": [
+    "typechecks"
+  ],
+  "author": "Jan Badenhorst",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^2.2.1"
+  }
+}
