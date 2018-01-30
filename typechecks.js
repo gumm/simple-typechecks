@@ -6,7 +6,7 @@
 // Language Enhancements
 //==============================================================================
 
-var typeCheck = {};
+const typeCheck = {};
 
 /**
  * This is a "fixed" version of the typeof operator.  It differs from the typeof
@@ -14,9 +14,9 @@ var typeCheck = {};
  * @param {*} value The value to get the type of.
  * @return {string} The name of the type.
  */
-typeCheck.typeOf = function(value) {
-  var s = typeof value;
-  if (s == 'object') {
+typeCheck.typeOf = value => {
+  const s = typeof value;
+  if (s === 'object') {
     if (value) {
       // Check these first, so we can avoid calling Object.prototype.toString if
       // possible.
@@ -32,12 +32,12 @@ typeCheck.typeOf = function(value) {
       // HACK: In order to use an Object prototype method on the arbitrary
       //   value, the compiler requires the value be cast to type Object,
       //   even though the ECMA spec explicitly allows it.
-      var className = Object.prototype.toString.call(
+      const className = Object.prototype.toString.call(
           /** @type {Object} */ (value));
       // In Firefox 3.6, attempting to access iframe window objects' length
       // property throws an NS_ERROR_FAILURE, so we need to special-case it
       // here.
-      if (className == '[object Window]') {
+      if (className === '[object Window]') {
         return 'object';
       }
 
@@ -59,13 +59,13 @@ typeCheck.typeOf = function(value) {
       //         "[object ", Result(1), and "]".
       //      3. Return Result(2).
       // and this behavior survives the destruction of the execution context.
-      if ((className == '[object Array]' ||
+      if ((className === '[object Array]' ||
            // In IE all non value types are wrapped as objects across window
            // boundaries (not iframe though) so we have to do object detection
            // for this edge case.
-           typeof value.length == 'number' &&
-           typeof value.splice != 'undefined' &&
-           typeof value.propertyIsEnumerable != 'undefined' &&
+           typeof value.length === 'number' &&
+           typeof value.splice !== 'undefined' &&
+           typeof value.propertyIsEnumerable !== 'undefined' &&
            !value.propertyIsEnumerable('splice')
 
           )) {
@@ -74,7 +74,7 @@ typeCheck.typeOf = function(value) {
       // HACK: There is still an array case that fails.
       //     function ArrayImpostor() {}
       //     ArrayImpostor.prototype = [];
-      //     var impostor = new ArrayImpostor;
+      //     const impostor = new ArrayImpostor;
       // this can be fixed by getting rid of the fast path
       // (value instanceof Array) and solely relying on
       // (value && Object.prototype.toString.vall(value) === '[object Array]')
@@ -85,9 +85,9 @@ typeCheck.typeOf = function(value) {
       // (it appears just as an object) so we cannot use just typeof val ==
       // 'function'. However, if the object has a call property, it is a
       // function.
-      if ((className == '[object Function]' ||
-          typeof value.call != 'undefined' &&
-          typeof value.propertyIsEnumerable != 'undefined' &&
+      if ((className === '[object Function]' ||
+          typeof value.call !== 'undefined' &&
+          typeof value.propertyIsEnumerable !== 'undefined' &&
           !value.propertyIsEnumerable('call'))) {
         return 'function';
       }
@@ -96,7 +96,7 @@ typeCheck.typeOf = function(value) {
       return 'null';
     }
 
-  } else if (s == 'function' && typeof value.call == 'undefined') {
+  } else if (s === 'function' && typeof value.call === 'undefined') {
     // In Safari typeof nodeList returns 'function', and on Firefox typeof
     // behaves similarly for HTML{Applet,Embed,Object}, Elements and RegExps. We
     // would like to return object for those and we can detect an invalid
@@ -114,7 +114,7 @@ typeCheck.typeOf = function(value) {
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is defined.
  */
-typeCheck.isDef = function(val) {
+typeCheck.isDef = val => {
   // void 0 always evaluates to undefined and hence we do not need to depend on
   // the definition of the global variable named 'undefined'.
   return val !== void 0;
@@ -125,19 +125,14 @@ typeCheck.isDef = function(val) {
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is defined and not null.
  */
-typeCheck.isDefAndNotNull = function(val) {
-  // Note that undefined == null.
-  return val != null;
-};
+typeCheck.isDefAndNotNull = val => val != null;
 
 /**
  * Returns true if the specified value is a function.
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is a function.
  */
-typeCheck.isFunction = function(val) {
-  return typeCheck.typeOf(val) == 'function';
-};
+typeCheck.isFunction = val => typeCheck.typeOf(val) === 'function';
 
 
 /**
@@ -145,9 +140,7 @@ typeCheck.isFunction = function(val) {
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is boolean.
  */
-typeCheck.isBoolean = function(val) {
-  return typeof val == 'boolean';
-};
+typeCheck.isBoolean = val => typeof val === 'boolean';
 
 /**
  * Parses a value and converts it to a boolean. This considers all positive
@@ -157,8 +150,8 @@ typeCheck.isBoolean = function(val) {
  * @param {(string|number|boolean|Boolean)=} a The value to parse.
  * @return {boolean} A boolean value.
  */
-typeCheck.parseBool = function(a) {
-  var bool = false;
+typeCheck.parseBool = a => {
+  let bool = false;
   if (parseFloat(a) > 0 || (/^(true)/i).test(a)) {
     bool = true;
   }
@@ -171,9 +164,7 @@ typeCheck.parseBool = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isArray = function(a) {
-  return typeCheck.typeOf(a) === 'array';
-};
+typeCheck.isArray = a => typeCheck.typeOf(a) === 'array';
 
 /**
  * True if the given value is an array with at least one element.
@@ -181,9 +172,7 @@ typeCheck.isArray = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isEmptyArr = function(a) {
-  return typeCheck.isArray(a) && !typeCheck.isDef(a[0]);
-};
+typeCheck.isEmptyArr = a => typeCheck.isArray(a) && !typeCheck.isDef(a[0]);
 
 /**
  * True if the given value is an empty array.
@@ -191,9 +180,7 @@ typeCheck.isEmptyArr = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isNotEmptyArr = function(a) {
-  return !typeCheck.isEmptyArr(a);
-};
+typeCheck.isNotEmptyArr = a => !typeCheck.isEmptyArr(a);
 
 /**
  * True if the given value is an array and its length is between the given
@@ -202,7 +189,7 @@ typeCheck.isNotEmptyArr = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.arrLengthBetween = function(a, min, max) {
+typeCheck.arrLengthBetween = (a, min, max) => {
   return a.length >= min && a.length <= max;
 };
 
@@ -212,9 +199,7 @@ typeCheck.arrLengthBetween = function(a, min, max) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isString = function(a) {
-  return typeCheck.typeOf(a) === 'string';
-};
+typeCheck.isString = a => typeCheck.typeOf(a) === 'string';
 
 /**
  * Anything that is a valid JS number returns true. This includes stuff like
@@ -223,9 +208,17 @@ typeCheck.isString = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isNumber = function(a) {
-  return typeof a == 'number';
-};
+typeCheck.isNumber = a => typeof a === 'number';
+
+/**
+ * Its mildly insane to make the type of NaN a number, and definitely not
+ * expected. This is a saner version of the simple isNumber test, that fails
+ * NaN's as well.
+ * The rest false.
+ * @param {*} a The value to check
+ * @return {boolean}
+ */
+typeCheck.isSaneNumber = a => !typeCheck.isNaN(a) && typeof a === 'number';
 
 /**
  * Only numbers that can reliably be passed to JSON as a number, and that
@@ -234,10 +227,10 @@ typeCheck.isNumber = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isInt = function(a) {
-  var aS = typeCheck.isDefAndNotNull(a) ? a.toString() : '.';
-  var valid = '0123456789'.split('');
-  var eachCheck = 0;
+typeCheck.isInt = a => {
+  const aS = typeCheck.isDefAndNotNull(a) ? a.toString() : '.';
+  const valid = '0123456789'.split('');
+  let eachCheck = 0;
   aS.split('').forEach(function(n) {
     eachCheck += valid.indexOf(n) >= 0 ? 0 : 1;
   });
@@ -250,10 +243,10 @@ typeCheck.isInt = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isSignedInt = function(a) {
-  var aS = typeCheck.isDefAndNotNull(a) ? a.toString() : '.';
-  var valid = '+-0123456789'.split('');
-  var eachCheck = 0;
+typeCheck.isSignedInt = a => {
+  const aS = typeCheck.isDefAndNotNull(a) ? a.toString() : '.';
+  const valid = '+-0123456789'.split('');
+  let eachCheck = 0;
   aS.split('').forEach(function(n) {
     eachCheck += valid.indexOf(n) >= 0 ? 0 : 1;
   });
@@ -266,32 +259,24 @@ typeCheck.isSignedInt = function(a) {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isObject = function(a) {
-  return typeCheck.typeOf(a) === 'object';
-};
+typeCheck.isObject = a => typeCheck.typeOf(a) === 'object';
 
 /**
  * Given a date this returns true.
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isDate = function(a) {
-  return Object.prototype.toString.call(a) === '[object Date]';
-};
+typeCheck.isDate = a => Object.prototype.toString.call(a) === '[object Date]';
 
 /**
- * This is a hack to test against NaNs. isNaN has some unexpected
- * behavior, such like: isNaN(' ') evaluates to false.
- * But one reliable effect is that NaN != NaN always evaluates to
- * true. So if (x != x) is true, then x is reliably NaN. I know, this
- * is not nice. But until ECMAScript (ES6) delivers the Number.isNaN(),
- * this is the workaround. Sorry.
+ * Normal isNaN has some unexpected behavior, such like: isNaN(' ') evaluates
+ * to false and isNaN('sting') evaluates to true.
+ * ECMAScript (ES6) delivers the Number.isNaN() with much more sane results, and
+ * the only thing that delivers a true is a true NaN
  * @param {*} a The value to evaluate
- * @return {boolean}
+ * @return {boolean}s
  */
-typeCheck.isNaN = function(a) {
-  return a != a;
-};
+typeCheck.isNaN = a => Number.isNaN(a);
 
 module.exports = typeCheck;
 
