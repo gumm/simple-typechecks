@@ -1,4 +1,4 @@
-const typeCheck = require('./typechecks.js');
+const typeCheck = require('../typechecks.js');
 const assert = require('assert');
 
 describe('Library of type check utilities', () => {

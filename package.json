@@ -4,7 +4,7 @@
   "description": "Simple typecheck",
   "main": "typechecks.js",
   "scripts": {
-    "test": "mocha -R spec ./test.js"
+    "test": "mocha --recursive ./test/"
   },
   "keywords": [
     "typechecks"
