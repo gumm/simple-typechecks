@@ -1,5 +1,5 @@
-const typeCheck = require('../typechecks.js');
-const assert = require('assert');
+import typeCheck from '../typechecks.js';
+import assert from 'assert';
 
 describe('Library of type check utilities', () => {
 

@@ -6,15 +6,13 @@
 // Language Enhancements
 //==============================================================================
 
-const typeCheck = {};
-
 /**
  * This is a "fixed" version of the typeof operator.  It differs from the typeof
  * operator in such a way that null returns 'null' and arrays return 'array'.
  * @param {*} value The value to get the type of.
  * @return {string} The name of the type.
  */
-typeCheck.typeOf = value => {
+const typeOf = value => {
   const s = typeof value;
   if (s === 'object') {
     if (value) {
@@ -114,7 +112,7 @@ typeCheck.typeOf = value => {
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is defined.
  */
-typeCheck.isDef = val => {
+const isDef = val => {
   // void 0 always evaluates to undefined and hence we do not need to depend on
   // the definition of the global variable named 'undefined'.
   return val !== void 0;
@@ -125,14 +123,14 @@ typeCheck.isDef = val => {
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is defined and not null.
  */
-typeCheck.isDefAndNotNull = val => val != null;
+const isDefAndNotNull = val => val != null;
 
 /**
  * Returns true if the specified value is a function.
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is a function.
  */
-typeCheck.isFunction = val => typeCheck.typeOf(val) === 'function';
+const isFunction = val => typeOf(val) === 'function';
 
 
 /**
@@ -140,7 +138,7 @@ typeCheck.isFunction = val => typeCheck.typeOf(val) === 'function';
  * @param {?} val Variable to test.
  * @return {boolean} Whether variable is boolean.
  */
-typeCheck.isBoolean = val => typeof val === 'boolean';
+const isBoolean = val => typeof val === 'boolean';
 
 /**
  * Parses a value and converts it to a boolean. This considers all positive
@@ -150,7 +148,7 @@ typeCheck.isBoolean = val => typeof val === 'boolean';
  * @param {(string|number|boolean|Boolean)=} a The value to parse.
  * @return {boolean} A boolean value.
  */
-typeCheck.parseBool = a => {
+const parseBool = a => {
   let bool = false;
   if (parseFloat(a) > 0 || (/^(true)/i).test(a)) {
     bool = true;
@@ -164,7 +162,7 @@ typeCheck.parseBool = a => {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isArray = a => typeCheck.typeOf(a) === 'array';
+const isArray = a => typeOf(a) === 'array';
 
 /**
  * True if the given value is an array with at least one element.
@@ -172,7 +170,7 @@ typeCheck.isArray = a => typeCheck.typeOf(a) === 'array';
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isEmptyArr = a => typeCheck.isArray(a) && !typeCheck.isDef(a[0]);
+const isEmptyArr = a => isArray(a) && !isDef(a[0]);
 
 /**
  * True if the given value is an empty array.
@@ -180,7 +178,7 @@ typeCheck.isEmptyArr = a => typeCheck.isArray(a) && !typeCheck.isDef(a[0]);
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isNotEmptyArr = a => !typeCheck.isEmptyArr(a);
+const isNotEmptyArr = a => !isEmptyArr(a);
 
 /**
  * True if the given value is an array and its length is between the given
@@ -189,7 +187,7 @@ typeCheck.isNotEmptyArr = a => !typeCheck.isEmptyArr(a);
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.arrLengthBetween = (a, min, max) => {
+const arrLengthBetween = (a, min, max) => {
   return a.length >= min && a.length <= max;
 };
 
@@ -199,7 +197,7 @@ typeCheck.arrLengthBetween = (a, min, max) => {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isString = a => typeCheck.typeOf(a) === 'string';
+const isString = a => typeOf(a) === 'string';
 
 /**
  * Anything that is a valid JS number returns true. This includes stuff like
@@ -208,7 +206,7 @@ typeCheck.isString = a => typeCheck.typeOf(a) === 'string';
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isNumber = a => typeof a === 'number';
+const isNumber = a => typeof a === 'number';
 
 /**
  * Its mildly insane to make the type of NaN a number, and definitely not
@@ -218,7 +216,7 @@ typeCheck.isNumber = a => typeof a === 'number';
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isSaneNumber = a => !typeCheck.isNaN(a) && typeof a === 'number';
+const isSaneNumber = a => !isNaN(a) && typeof a === 'number';
 
 /**
  * Only numbers that can reliably be passed to JSON as a number, and that
@@ -227,14 +225,14 @@ typeCheck.isSaneNumber = a => !typeCheck.isNaN(a) && typeof a === 'number';
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isInt = a => {
-  const aS = typeCheck.isDefAndNotNull(a) ? a.toString() : '.';
+const isInt = a => {
+  const aS = isDefAndNotNull(a) ? a.toString() : '.';
   const valid = '0123456789'.split('');
   let eachCheck = 0;
   aS.split('').forEach(function(n) {
     eachCheck += valid.indexOf(n) >= 0 ? 0 : 1;
   });
-  return typeCheck.typeOf(a) === 'number' && a >= 0 && !eachCheck;
+  return typeOf(a) === 'number' && a >= 0 && !eachCheck;
 };
 
 /**
@@ -243,14 +241,14 @@ typeCheck.isInt = a => {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isSignedInt = a => {
-  const aS = typeCheck.isDefAndNotNull(a) ? a.toString() : '.';
+const isSignedInt = a => {
+  const aS = isDefAndNotNull(a) ? a.toString() : '.';
   const valid = '+-0123456789'.split('');
   let eachCheck = 0;
   aS.split('').forEach(function(n) {
     eachCheck += valid.indexOf(n) >= 0 ? 0 : 1;
   });
-  return typeCheck.typeOf(a) === 'number' && !eachCheck;
+  return typeOf(a) === 'number' && !eachCheck;
 };
 
 /**
@@ -259,14 +257,14 @@ typeCheck.isSignedInt = a => {
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isObject = a => typeCheck.typeOf(a) === 'object';
+const isObject = a => typeOf(a) === 'object';
 
 /**
  * Given a date this returns true.
  * @param {*} a The value to check
  * @return {boolean}
  */
-typeCheck.isDate = a => Object.prototype.toString.call(a) === '[object Date]';
+const isDate = a => Object.prototype.toString.call(a) === '[object Date]';
 
 /**
  * Normal isNaN has some unexpected behavior, such like: isNaN(' ') evaluates
@@ -276,7 +274,26 @@ typeCheck.isDate = a => Object.prototype.toString.call(a) === '[object Date]';
  * @param {*} a The value to evaluate
  * @return {boolean}s
  */
-typeCheck.isNaN = a => Number.isNaN(a);
+const isNaN = a => Number.isNaN(a);
 
-module.exports = typeCheck;
 
+export default {
+  typeOf,
+  isDef,
+  isDefAndNotNull,
+  isFunction,
+  isBoolean,
+  parseBool,
+  isArray,
+  isEmptyArr,
+  isNotEmptyArr,
+  arrLengthBetween,
+  isString,
+  isNumber,
+  isSaneNumber,
+  isInt,
+  isSignedInt,
+  isObject,
+  isDate,
+  isNaN,
+}
